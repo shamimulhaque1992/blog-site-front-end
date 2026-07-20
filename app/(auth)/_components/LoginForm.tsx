@@ -52,7 +52,7 @@ const LoginForm = () => {
                   Forgot your password?
                 </a>
               </div>
-              <Input type="password" name="password" required />
+              <Input type="password" name="password" placeholder="••••••••" required />
             </div>
           </div>
         </CardContent>
