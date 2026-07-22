@@ -20,9 +20,11 @@ export const getMyProfile = async () => {
       // Authorization:`Bearer ${accessToken}`
       Cookie: `accessToken=${accessToken}`,
     },
+    cache: "force-cache",
+    next: { revalidate: 60 * 60 * 24, tags: ["my-profile"] },
   });
 
   const result = await res.json();
-  console.log("🚀 ~ getMyProfiel ~ result:", result)
+  console.log("🚀 ~ getMyProfiel ~ result:", result);
   return result;
 };
