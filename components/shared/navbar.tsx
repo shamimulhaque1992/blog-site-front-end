@@ -89,7 +89,6 @@ type IUser = {
 export function SiteNavbar({ user }: { user: IUser }) {
   const router = useRouter();
   const handleUserMenuAction = async (action: string) => {
-    console.log("🚀 ~ handleUserMenuAction ~ action:", action)
     if (action === "Log out") {
       await logout();
       toast.success("User logged out successfully!");

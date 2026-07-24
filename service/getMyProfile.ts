@@ -25,6 +25,5 @@ export const getMyProfile = async () => {
   });
 
   const result = await res.json();
-  console.log("🚀 ~ getMyProfiel ~ result:", result);
   return result;
 };
