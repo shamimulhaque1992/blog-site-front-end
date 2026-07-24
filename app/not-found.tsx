@@ -14,7 +14,7 @@ const NotFound = () => {
         <p className="mt-6 text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">
           404 Error
         </p>
-        <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
+        <h1 className="mt-3 text-4xl font-inter font-semibold tracking-tight sm:text-5xl">
           We couldn&apos;t find that page.
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-muted-foreground">
