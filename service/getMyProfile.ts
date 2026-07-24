@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 export const getMyProfile = async () => {
   const cookieStore = await cookies();
 
-  const accessToken = cookieStore.get("accessToken")?.value;
+  const accessToken = cookieStore?.get("accessToken")?.value;
 
   if (!accessToken) {
     return {

@@ -28,6 +28,9 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { getAvatarNameFromFullName } from "@/helpers/appHelper";
+import { logout } from "@/service/logout";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const menuItems = [
   { label: "Home", href: "/" },
@@ -84,7 +87,15 @@ type IUser = {
 };
 
 export function SiteNavbar({ user }: { user: IUser }) {
-  console.log("🚀 ~ SiteNavbar ~ user:", user);
+  const router = useRouter();
+  const handleUserMenuAction = async (action: string) => {
+    console.log("🚀 ~ handleUserMenuAction ~ action:", action)
+    if (action === "Log out") {
+      await logout();
+      toast.success("User logged out successfully!");
+      router.push("/login");
+    }
+  };
   return (
     <header className="sticky top-0 border-b bg-background/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 md:px-6">
@@ -112,7 +123,69 @@ export function SiteNavbar({ user }: { user: IUser }) {
         </NavigationMenu>
 
         <div className="flex items-center gap-2">
-          <ProfileMenu user={user} />
+          {/* <ProfileMenu user={user} /> */}
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full"
+                  aria-label="Open profile menu"
+                >
+                  <Avatar className="size-8">
+                    <AvatarFallback>
+                      {user && getAvatarNameFromFullName(user?.name)}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end">
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>
+                    <span className="flex flex-col gap-0.5">
+                      <span>{user?.name}</span>
+                      <span className="text-xs font-normal text-muted-foreground">
+                        {user?.email}
+                      </span>
+                    </span>
+                  </DropdownMenuLabel>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                {profileMenuSections.map((section, index) => (
+                  <Fragment key={section.id}>
+                    {index > 0 && <DropdownMenuSeparator />}
+                    <DropdownMenuGroup>
+                      {section.items.map((item) => {
+                        const Icon = item.icon;
+
+                        return (
+                          <DropdownMenuItem
+                            key={item.href}
+                            variant={
+                              section.id === "session"
+                                ? "destructive"
+                                : "default"
+                            }
+                            onClick={async () =>
+                              await handleUserMenuAction(item.label)
+                            }
+                          >
+                            <Icon />
+                            {item.label}
+                          </DropdownMenuItem>
+                        );
+                      })}
+                    </DropdownMenuGroup>
+                  </Fragment>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link href="/login">
+              <Button>Log in</Button>
+            </Link>
+          )}
         </div>
       </div>
     </header>
@@ -162,11 +235,10 @@ function ProfileMenu({ user }: { user: IUser }) {
                     variant={
                       section.id === "session" ? "destructive" : "default"
                     }
+                    // onClick={() => handleUserMenuAction("logout")}
                   >
-                    <Link href={item.href}>
-                      <Icon />
-                      {item.label}
-                    </Link>
+                    <Icon />
+                    {item.label}
                   </DropdownMenuItem>
                 );
               })}
