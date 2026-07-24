@@ -73,16 +73,21 @@ const profileMenuSections = [
 //     }
 
 type IUser = {
-  id: string;
-  name: string;
-  email: string;
-  activeStatus: string;
-  role: string;
-  profile: {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
     id: string;
-    bio: string;
-    userId: string;
-    profilePhoto: string;
+    name: string;
+    email: string;
+    activeStatus: string;
+    role: string;
+    profile: {
+      id: string;
+      bio: string;
+      userId: string;
+      profilePhoto: string;
+    };
   };
 };
 
@@ -123,7 +128,7 @@ export function SiteNavbar({ user }: { user: IUser }) {
 
         <div className="flex items-center gap-2">
           {/* <ProfileMenu user={user} /> */}
-          {user ? (
+          {user.success ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -134,7 +139,7 @@ export function SiteNavbar({ user }: { user: IUser }) {
                 >
                   <Avatar className="size-8">
                     <AvatarFallback>
-                      {user && getAvatarNameFromFullName(user?.name)}
+                      {user && getAvatarNameFromFullName(user?.data?.name)}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
@@ -143,9 +148,9 @@ export function SiteNavbar({ user }: { user: IUser }) {
                 <DropdownMenuGroup>
                   <DropdownMenuLabel>
                     <span className="flex flex-col gap-0.5">
-                      <span>{user?.name}</span>
+                      <span>{user?.data?.name}</span>
                       <span className="text-xs font-normal text-muted-foreground">
-                        {user?.email}
+                        {user?.data?.email}
                       </span>
                     </span>
                   </DropdownMenuLabel>
@@ -203,7 +208,7 @@ function ProfileMenu({ user }: { user: IUser }) {
         >
           <Avatar className="size-8">
             <AvatarFallback>
-              {user && getAvatarNameFromFullName(user?.name)}
+              {user && getAvatarNameFromFullName(user?.data?.name)}
             </AvatarFallback>
           </Avatar>
         </Button>
@@ -212,9 +217,9 @@ function ProfileMenu({ user }: { user: IUser }) {
         <DropdownMenuGroup>
           <DropdownMenuLabel>
             <span className="flex flex-col gap-0.5">
-              <span>{user?.name}</span>
+              <span>{user?.data?.name}</span>
               <span className="text-xs font-normal text-muted-foreground">
-                {user?.email}
+                {user?.data?.email}
               </span>
             </span>
           </DropdownMenuLabel>

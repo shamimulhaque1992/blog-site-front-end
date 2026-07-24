@@ -6,7 +6,7 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
   const user = await getMyProfile();
   return (
     <div>
-      <SiteNavbar user={user?.data} />
+      <SiteNavbar user={user} />
       {children}
     </div>
   );
