@@ -22,6 +22,7 @@ export function proxy(request: NextRequest) {
     userRole = decodedToken.role;
   }
 
+  // redirect authenticated user from auth routes
   if (
     accessToken &&
     AUTH_ROUTES.some((route) => routeMatches(route, pathName))
@@ -37,6 +38,8 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
+  // authenticate user for protected routes
+
   const isPublicRoute = PUBLIC_ROUTES.some((route) =>
     routeMatches(route, pathName),
   );
@@ -48,11 +51,19 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
+  // redirect users to the authorized routes
+  if (pathName.startsWith("/dashboard") && userRole !== "USER") {
+    return NextResponse.redirect(new URL("/not-found", request.url));
+  }
+  else if (pathName.startsWith("/admin-dashboard") && userRole !== "ADMIN") {
+    return NextResponse.redirect(new URL("/not-found", request.url));
+  }
+  else if (pathName.startsWith("/author-dashboard") && userRole !== "AUTHOR") {
+    return NextResponse.redirect(new URL("/not-found", request.url));
+  }
+
   return NextResponse.next();
 }
-
-// Alternatively, you can use a default export:
-// export default function proxy(request: NextRequest) { ... }
 
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
