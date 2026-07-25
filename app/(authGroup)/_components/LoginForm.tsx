@@ -20,7 +20,7 @@ const initialState: initialStateType = {
 const LoginForm = () => {
   const [state, action, pending] = useActionState(loginAction, initialState);
   useEffect(() => {
-    if (!state) return;
+    if (!state.success) return;
     if (state.success) {
       toast.success(state.message);
     }
@@ -30,7 +30,7 @@ const LoginForm = () => {
   }, [state]);
   return (
     <div className="space-y-5">
-      <form action={action}>
+      <form action={action} className="flex flex-col gap-4">
         <CardContent>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
@@ -52,7 +52,12 @@ const LoginForm = () => {
                   Forgot your password?
                 </a>
               </div>
-              <Input type="password" name="password" placeholder="••••••••" required />
+              <Input
+                type="password"
+                name="password"
+                placeholder="••••••••"
+                required
+              />
             </div>
           </div>
         </CardContent>

@@ -1,7 +1,16 @@
 import type { Metadata } from "next";
+import { Inter, Roboto } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
-import { SiteNavbar } from "@/components/shared/navbar";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
+const roboto = Roboto({
+  subsets: ["latin"],
+  variable: "--font-roboto",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,10 +23,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased">
-      <body className="min-h-full flex flex-col">
+    <html
+      lang="en"
+      className={`h-full antialiased ${roboto.variable} ${inter.variable}`}
+    >
+      <body className="min-h-full flex flex-col font-roboto">
         <Toaster position="top-right" richColors />
-        <SiteNavbar/>
+
         {children}
       </body>
     </html>

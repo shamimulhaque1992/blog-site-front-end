@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 export type initialStateType = {
   success: boolean;
@@ -44,7 +45,23 @@ export const loginAction = async (
       sameSite: "lax",
     });
 
-    redirect("/dashboard", "replace");
+    const decodedToken = jwt.decode(
+      result.data.accessToken,
+    ) as JwtPayload | null;
+    const role =
+      decodedToken && typeof decodedToken !== "string"
+        ? decodedToken.role
+        : null;
+
+    if (role === "ADMIN") {
+      redirect("/admin-dashboard");
+    }
+
+    if (role === "AUTHOR") {
+      redirect("/author-dashboard");
+    }
+
+    redirect("/dashboard");
   }
   return result;
 };

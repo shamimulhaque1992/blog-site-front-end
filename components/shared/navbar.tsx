@@ -27,6 +27,10 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { getAvatarNameFromFullName } from "@/helpers/appHelper";
+import { logout } from "@/service/logout";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const menuItems = [
   { label: "Home", href: "/" },
@@ -50,7 +54,52 @@ const profileMenuSections = [
   },
 ] as const;
 
-export function SiteNavbar() {
+// "data": {
+//         "id": "2760cd9e-acd9-45d7-890d-39b7bafa6b1d",
+//         "name": "asdfas sdfs sfsdf",
+//         "email": "khandokershamimulhaque@gmail.com",
+//         "activeStatus": "ACTIVE",
+//         "role": "ADMIN",
+//         "createdAt": "2026-06-24T06:05:36.232Z",
+//         "updatedAt": "2026-07-01T09:43:20.097Z",
+//         "profile": {
+//             "id": "481830ac-8048-415e-b76d-a329ebcd7865",
+//             "profilePhoto": "https://randomphoto.com",
+//             "bio": "sdfs sdfas sdfsdf",
+//             "userId": "2760cd9e-acd9-45d7-890d-39b7bafa6b1d",
+//             "createAt": "2026-06-24T06:05:36.287Z",
+//             "updatedAt": "2026-07-01T09:43:20.097Z"
+//         }
+//     }
+
+type IUser = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    id: string;
+    name: string;
+    email: string;
+    activeStatus: string;
+    role: string;
+    profile: {
+      id: string;
+      bio: string;
+      userId: string;
+      profilePhoto: string;
+    };
+  };
+};
+
+export function SiteNavbar({ user }: { user: IUser }) {
+  const router = useRouter();
+  const handleUserMenuAction = async (action: string) => {
+    if (action === "Log out") {
+      await logout();
+      toast.success("User logged out successfully!");
+      router.push("/login");
+    }
+  };
   return (
     <header className="sticky top-0 border-b bg-background/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 md:px-6">
@@ -78,14 +127,76 @@ export function SiteNavbar() {
         </NavigationMenu>
 
         <div className="flex items-center gap-2">
-          <ProfileMenu />
+          {/* <ProfileMenu user={user} /> */}
+          {user.success ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full"
+                  aria-label="Open profile menu"
+                >
+                  <Avatar className="size-8">
+                    <AvatarFallback>
+                      {user && getAvatarNameFromFullName(user?.data?.name)}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end">
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>
+                    <span className="flex flex-col gap-0.5">
+                      <span>{user?.data?.name}</span>
+                      <span className="text-xs font-normal text-muted-foreground">
+                        {user?.data?.email}
+                      </span>
+                    </span>
+                  </DropdownMenuLabel>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                {profileMenuSections.map((section, index) => (
+                  <Fragment key={section.id}>
+                    {index > 0 && <DropdownMenuSeparator />}
+                    <DropdownMenuGroup>
+                      {section.items.map((item) => {
+                        const Icon = item.icon;
+
+                        return (
+                          <DropdownMenuItem
+                            key={item.href}
+                            variant={
+                              section.id === "session"
+                                ? "destructive"
+                                : "default"
+                            }
+                            onClick={async () =>
+                              await handleUserMenuAction(item.label)
+                            }
+                          >
+                            <Icon />
+                            {item.label}
+                          </DropdownMenuItem>
+                        );
+                      })}
+                    </DropdownMenuGroup>
+                  </Fragment>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link href="/login">
+              <Button>Log in</Button>
+            </Link>
+          )}
         </div>
       </div>
     </header>
   );
 }
 
-function ProfileMenu() {
+function ProfileMenu({ user }: { user: IUser }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -96,7 +207,9 @@ function ProfileMenu() {
           aria-label="Open profile menu"
         >
           <Avatar className="size-8">
-            <AvatarFallback>AS</AvatarFallback>
+            <AvatarFallback>
+              {user && getAvatarNameFromFullName(user?.data?.name)}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -104,9 +217,9 @@ function ProfileMenu() {
         <DropdownMenuGroup>
           <DropdownMenuLabel>
             <span className="flex flex-col gap-0.5">
-              <span>Alex Smith</span>
+              <span>{user?.data?.name}</span>
               <span className="text-xs font-normal text-muted-foreground">
-                alex@example.com
+                {user?.data?.email}
               </span>
             </span>
           </DropdownMenuLabel>
@@ -126,11 +239,10 @@ function ProfileMenu() {
                     variant={
                       section.id === "session" ? "destructive" : "default"
                     }
+                    // onClick={() => handleUserMenuAction("logout")}
                   >
-                    <Link href={item.href}>
-                      <Icon />
-                      {item.label}
-                    </Link>
+                    <Icon />
+                    {item.label}
                   </DropdownMenuItem>
                 );
               })}
