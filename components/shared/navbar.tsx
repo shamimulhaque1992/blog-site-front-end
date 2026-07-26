@@ -34,9 +34,11 @@ import { toast } from "sonner";
 
 const menuItems = [
   { label: "Home", href: "/" },
-  { label: "Features", href: "#features" },
-  { label: "Pricing", href: "#pricing" },
   { label: "About", href: "#about" },
+  { label: "Service", href: "#service" },
+  { label: "Pricing", href: "#pricing" },
+  { label: "News", href: "/news" },
+  { label: "Premium", href: "/premium" },
 ] as const;
 
 const profileMenuSections = [
