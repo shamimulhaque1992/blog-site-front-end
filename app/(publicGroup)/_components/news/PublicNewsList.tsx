@@ -4,8 +4,13 @@ import { IPost } from "@/lib/types";
 import { NewsCard } from "./NewsCard";
 import { getRegularNews } from "../../_actions/getRegularNews";
 
-export async function PublicNewsList() {
-  const result = await getRegularNews();
+export async function PublicNewsList({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const query = await searchParams;
+  const result = await getRegularNews({ query });
 
   if (!result.success || !result.data?.length) {
     return (

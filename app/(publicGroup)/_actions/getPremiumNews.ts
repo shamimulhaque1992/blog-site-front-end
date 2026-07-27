@@ -2,8 +2,17 @@
 
 import { cookies } from "next/headers";
 
-export const getPremiumNews = async () => {
+export const getPremiumNews = async ({
+  query,
+}: {
+  query?: { [key: string]: string | string[] | undefined };
+}) => {
   const cookieStore = await cookies();
+  const params = new URLSearchParams();
+
+  if (query && query.searchTerm) {
+    params.set("searchTerm", query.searchTerm as string);
+  }
   const accessToken = cookieStore.get("accessToken")?.value || null;
 
   if (!accessToken) {
@@ -12,16 +21,20 @@ export const getPremiumNews = async () => {
       message: "User not logged in!",
     };
   }
-  const res = await fetch(`${process.env.BACKEND_API_URL}posts/premium`, {
-    headers: {
-      Cookie: `accessToken=${accessToken}`,
+  console.log("🚀 ~ getPremiumNews ~`:", `${params.toString()}`)
+  const res = await fetch(
+    `${process.env.BACKEND_API_URL}posts/premium?${params.toString()}`,
+    {
+      headers: {
+        Cookie: `accessToken=${accessToken}`,
+      },
+      cache: "force-cache",
+      next: {
+        revalidate: 60 * 60 * 60,
+        tags: ["premium-posts"],
+      },
     },
-    cache: "force-cache",
-    next: {
-      revalidate: 60 * 60 * 60,
-      tags: ["premium-posts"],
-    },
-  });
+  );
 
   const result = await res.json();
   return result;
