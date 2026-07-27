@@ -39,3 +39,22 @@ export interface IComment {
 }
 
 export type IPostStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
+
+export type IUser = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    id: string;
+    name: string;
+    email: string;
+    activeStatus: string;
+    role: string;
+    profile: {
+      id: string;
+      bio: string;
+      userId: string;
+      profilePhoto: string;
+    };
+  };
+};

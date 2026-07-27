@@ -31,6 +31,7 @@ import { getAvatarNameFromFullName } from "@/helpers/appHelper";
 import { logout } from "@/service/logout";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { IUser } from "@/lib/types";
 
 const menuItems = [
   { label: "Home", href: "/" },
@@ -73,25 +74,6 @@ const profileMenuSections = [
 //             "updatedAt": "2026-07-01T09:43:20.097Z"
 //         }
 //     }
-
-type IUser = {
-  success: boolean;
-  statusCode: number;
-  message: string;
-  data: {
-    id: string;
-    name: string;
-    email: string;
-    activeStatus: string;
-    role: string;
-    profile: {
-      id: string;
-      bio: string;
-      userId: string;
-      profilePhoto: string;
-    };
-  };
-};
 
 export function SiteNavbar({ user }: { user: IUser }) {
   const router = useRouter();
