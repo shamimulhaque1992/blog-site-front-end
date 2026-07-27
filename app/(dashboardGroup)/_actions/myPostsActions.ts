@@ -1,5 +1,6 @@
 "use server";
 
+import { validateAccessToken } from "@/service/getAccessToken";
 import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 
@@ -33,15 +34,7 @@ export const createAPosts = async (
   initialState: IInitialState,
   formData: FormData,
 ) => {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken")?.value || null;
-
-  if (!accessToken) {
-    return {
-      success: false,
-      message: "User not logged in!",
-    };
-  }
+  const accessToken = await validateAccessToken();
 
   const payload = {
     title: formData.get("title"),
@@ -85,15 +78,7 @@ export const updateAPosts = async (
   initialState: IInitialState,
   formData: FormData,
 ) => {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken")?.value || null;
-
-  if (!accessToken) {
-    return {
-      success: false,
-      message: "User not logged in!",
-    };
-  }
+  const accessToken = await validateAccessToken();
 
   const payload = {
     title: formData.get("title") ?? "",

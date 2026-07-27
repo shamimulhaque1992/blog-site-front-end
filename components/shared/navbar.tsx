@@ -4,6 +4,7 @@ import { Fragment } from "react";
 import Link from "next/link";
 import {
   CreditCardIcon,
+  LayoutDashboard,
   LogOutIcon,
   SettingsIcon,
   UserIcon,
@@ -47,6 +48,7 @@ const profileMenuSections = [
     id: "account",
     items: [
       { label: "Profile", href: "#profile", icon: UserIcon },
+      { label: "Dashboard", href: "#profile", icon: LayoutDashboard },
       { label: "Billing", href: "#billing", icon: CreditCardIcon },
       { label: "Settings", href: "#settings", icon: SettingsIcon },
     ],
@@ -57,27 +59,19 @@ const profileMenuSections = [
   },
 ] as const;
 
-// "data": {
-//         "id": "2760cd9e-acd9-45d7-890d-39b7bafa6b1d",
-//         "name": "asdfas sdfs sfsdf",
-//         "email": "khandokershamimulhaque@gmail.com",
-//         "activeStatus": "ACTIVE",
-//         "role": "ADMIN",
-//         "createdAt": "2026-06-24T06:05:36.232Z",
-//         "updatedAt": "2026-07-01T09:43:20.097Z",
-//         "profile": {
-//             "id": "481830ac-8048-415e-b76d-a329ebcd7865",
-//             "profilePhoto": "https://randomphoto.com",
-//             "bio": "sdfs sdfas sdfsdf",
-//             "userId": "2760cd9e-acd9-45d7-890d-39b7bafa6b1d",
-//             "createAt": "2026-06-24T06:05:36.287Z",
-//             "updatedAt": "2026-07-01T09:43:20.097Z"
-//         }
-//     }
-
 export function SiteNavbar({ user }: { user: IUser }) {
   const router = useRouter();
   const handleUserMenuAction = async (action: string) => {
+    if (action === "Dashboard") {
+      if (user.data.role === "USER") {
+        router.push("/dashboard");
+      } else if (user.data.role === "ADMIN") {
+        router.push("/admin-dashboard");
+      } else if (user.data.role === "AUTHOR") {
+        router.push("/author-dashboard");
+      }
+    }
+
     if (action === "Log out") {
       await logout();
       toast.success("User logged out successfully!");

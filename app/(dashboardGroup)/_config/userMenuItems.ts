@@ -8,8 +8,8 @@ export const USER_MENU_ITEMS: ISidebarItems[] = [
     icon: LayoutDashboard,
   },
   {
-    label: "My profile",
-    href: "/dashboard/my-profile",
+    label: "My posts",
+    href: "/dashboard/my-posts",
     icon: FileText,
   },
 ];

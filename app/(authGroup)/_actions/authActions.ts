@@ -15,6 +15,7 @@ export type initialStateType = {
 };
 
 export const loginAction = async (
+  redirectTo: string,
   initialData: initialStateType,
   formData: FormData,
 ) => {
@@ -52,6 +53,15 @@ export const loginAction = async (
       decodedToken && typeof decodedToken !== "string"
         ? decodedToken.role
         : null;
+
+    if (
+      redirectTo &&
+      typeof redirectTo === "string" &&
+      !redirectTo.startsWith("//") &&
+      redirectTo.startsWith("/")
+    ) {
+      redirect(redirectTo);
+    }
 
     if (role === "ADMIN") {
       redirect("/admin-dashboard");

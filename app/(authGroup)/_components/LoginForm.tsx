@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { initialStateType, loginAction } from "../_actions/authActions";
 import { toast } from "sonner";
+import { useSearchParams } from "next/navigation";
 
 const initialState: initialStateType = {
   success: false,
@@ -18,7 +19,12 @@ const initialState: initialStateType = {
 };
 
 const LoginForm = () => {
-  const [state, action, pending] = useActionState(loginAction, initialState);
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirectTo") ?? "";
+  const [state, action, pending] = useActionState(
+    loginAction.bind(null, redirectTo),
+    initialState,
+  );
   useEffect(() => {
     if (!state.success) return;
     if (state.success) {
